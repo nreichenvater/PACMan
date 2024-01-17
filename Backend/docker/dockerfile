@@ -1,0 +1,62 @@
+# FROM node:latest
+# ENV NODE_ENV=dev
+
+
+
+# WORKDIR /app
+
+# COPY dashboard /app
+
+# SHELL ["/bin/bash", "-c"]
+# RUN echo "$(openssl version)"
+# RUN openssl req \
+# -x509 \
+# -out localhost.crt \
+# -keyout localhost.key \ 
+# -newkey rsa:2048 \
+# -nodes \
+# -sha256 \
+# -subj "/CN=localhost" \
+# -extensions EXT \
+# -config <(printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+  
+# RUN npm install --dev
+# RUN npx prisma generate
+
+# CMD [ "node", "server.js" ]
+
+FROM node:lts-alpine
+
+##RUN npm install --global nodemon
+
+RUN apk update && apk add bash
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+RUN npm audit fix --force
+
+
+COPY client/my-app /app 
+COPY server /server 
+COPY client/start.sh /app/ 
+
+RUN chmod 777 /app/start.sh
+
+
+
+EXPOSE 3000/tcp 
+EXPOSE 3000/udp
+
+EXPOSE 8080/tcp 
+EXPOSE 8080/udp
+
+RUN npm install
+
+##CMD ["npm", "start"]
+#ENTRYPOINT ["/app/start.sh"]
+CMD ["/bin/bash", "start.sh"]
+
+#CMD ["bash","start.sh"]
