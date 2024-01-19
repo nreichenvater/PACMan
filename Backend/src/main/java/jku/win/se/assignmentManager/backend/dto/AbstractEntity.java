@@ -13,9 +13,6 @@ public abstract class AbstractEntity {
 	private long createdAtTimeStamp;
 	private Date updatedAt;
 	private long updatedAtTimeStamp;
-	// may be empty
-	private String creator;
-	private String editor;
 	public AbstractEntity() {
 		this.id = UUID.randomUUID().toString();
 		this.createdAt = new Date();

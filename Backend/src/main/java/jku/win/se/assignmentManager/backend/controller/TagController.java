@@ -1,5 +1,6 @@
 package jku.win.se.assignmentManager.backend.controller;
 
+import jku.win.se.assignmentManager.backend.config.Constants;
 import jku.win.se.assignmentManager.backend.dao.TagDao;
 import jku.win.se.assignmentManager.backend.dto.Tag;
 import jku.win.se.assignmentManager.backend.response.ErrorResponse;
@@ -30,14 +31,14 @@ public class TagController {
 		//check if user is logged in with valid token
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_SESSION_EXPIRED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_SESSION_EXPIRED);
 		}
 		
 		String body = request.body();
@@ -48,9 +49,9 @@ public class TagController {
 			e.printStackTrace();
 		}
 		if(t == null || t.getTag() == null) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		
 		tagDao.upsert(t);
@@ -62,14 +63,14 @@ public class TagController {
 		//check if user is logged in with valid token
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_SESSION_EXPIRED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_SESSION_EXPIRED);
 		}
 		
 		return new TagsResponse(tagDao.getAll());
@@ -79,19 +80,19 @@ public class TagController {
 		//check if user is logged in with valid token
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_SESSION_EXPIRED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_SESSION_EXPIRED);
 		}
 		
 		Tag t = tagDao.get(request.params(":tag"));
 		if(t == null) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
 			return new ErrorResponse("The given tag does not exist");
 		}

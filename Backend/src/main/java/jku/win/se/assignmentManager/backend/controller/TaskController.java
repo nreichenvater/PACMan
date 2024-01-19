@@ -6,6 +6,7 @@ import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.testcontainers.shaded.org.bouncycastle.util.encoders.Base64;
 
+import jku.win.se.assignmentManager.backend.config.Constants;
 import jku.win.se.assignmentManager.backend.dao.CompetenceTaskDao;
 import jku.win.se.assignmentManager.backend.dao.FileDao;
 import jku.win.se.assignmentManager.backend.dao.TaskDao;
@@ -45,40 +46,40 @@ public class TaskController {
 		response.type("application/json");
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		List<Task> ts = taskDao.getAllByTaskId(request.params(":taskid"));
 		if(ts.size() <= 0) {
-			response.status(ServerController.STATUS_CODE_OK);
+			response.status(Constants.STATUS_CODE_OK);
 			return new TaskExistsResponse(false);
 		}
 		for(Task t : ts) {
 			if(t.getMetadata().get("language").equals(request.params(":lang"))){
-				response.status(ServerController.STATUS_CODE_OK);
+				response.status(Constants.STATUS_CODE_OK);
 				return new TaskExistsResponse(true);
 			}
 		}
-		response.status(ServerController.STATUS_CODE_OK);
+		response.status(Constants.STATUS_CODE_OK);
 		return new TaskExistsResponse(false);
 	}
 
 	private Object upsertTask(Request request, Response response) {
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		String body = request.body();
@@ -89,13 +90,13 @@ public class TaskController {
 			e.printStackTrace();
 		}
 		if(taskRequest == null) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		String validationError = taskRequest.validateBody();
 		if(!StringUtils.isEmptyOrNull(validationError)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
 			return new ErrorResponse(validationError);
 		}
@@ -123,30 +124,30 @@ public class TaskController {
 		
 		taskDao.upsert(t);
 		
-		response.status(ServerController.STATUS_CODE_OK);
+		response.status(Constants.STATUS_CODE_OK);
 		return new SuccessResponse("The task was saved successfully");
 	}
 	
 	private Object deleteTask(Request request, Response response) {
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		response.type("application/json");
 		Task t = taskDao.get(request.params(":id"));
 		if(t != null) {
 			taskDao.delete(t);
-			response.status(ServerController.STATUS_CODE_OK);
+			response.status(Constants.STATUS_CODE_OK);
 			return new SuccessResponse("The task was deleted successfully");
 		}
-		response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+		response.status(Constants.STATUS_CODE_BAD_REQUEST);
 		return new ErrorResponse("The task could not be found");
 	}
 	

@@ -16,7 +16,7 @@ public class MongoDBConfig {
 	
 	private static MongoDBConfig instance = new MongoDBConfig();
 	
-	private static final String MONGO_URI = "mongodb://mongodb:27017";
+	private static final String MONGO_URI = "mongodb://127.0.0.1:27017";
 	private static final String DATABASE_NAME = "pacman";
 	
 	private MongoClient mongoClient;

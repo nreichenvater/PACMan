@@ -3,6 +3,7 @@ package jku.win.se.assignmentManager.backend.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import jku.win.se.assignmentManager.backend.config.Constants;
 import jku.win.se.assignmentManager.backend.dao.CompetenceDao;
 import jku.win.se.assignmentManager.backend.dao.CompetenceTaskDao;
 import jku.win.se.assignmentManager.backend.dao.TaskDao;
@@ -10,7 +11,6 @@ import jku.win.se.assignmentManager.backend.dto.Competence;
 import jku.win.se.assignmentManager.backend.dto.CompetenceTask;
 import jku.win.se.assignmentManager.backend.dto.Dependency;
 import jku.win.se.assignmentManager.backend.dto.Task;
-import jku.win.se.assignmentManager.backend.dto.WeightedCompetence;
 import jku.win.se.assignmentManager.backend.request.CompetenceModelRequest;
 import jku.win.se.assignmentManager.backend.request.MappingFileRequest;
 import jku.win.se.assignmentManager.backend.response.CompetenceTreeResponse;
@@ -48,12 +48,12 @@ public class CompetenceController {
 		response.type("application/json");
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		String body = request.body();
@@ -64,12 +64,12 @@ public class CompetenceController {
 			e.printStackTrace();
 		}
 		if(cmr == null) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(cmr.getCompetences().size() <= 0) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		
 		//save as tree
@@ -99,12 +99,12 @@ public class CompetenceController {
 		response.type("application/json");
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		String body = request.body();
@@ -116,9 +116,9 @@ public class CompetenceController {
 			e.printStackTrace();
 		}
 		if(mfr == null) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		//save weighted competences on existing tasks, but also save CompetenceTask objects for not yet existing tasks
 		for(CompetenceTask ct : mfr.getAssignmentMapping().getTasks()) {
@@ -146,12 +146,12 @@ public class CompetenceController {
 		response.type("application/json");
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		List<CompetenceTask> competenceTasks = competenceTaskDao.getAll();
@@ -181,12 +181,12 @@ public class CompetenceController {
 		//check if user is logged in with valid token
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		//delete CompetenceTasks

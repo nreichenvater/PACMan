@@ -8,6 +8,10 @@
  - Backend: Java
  - Database: MongoDB
 
+ ![Login](/Frontend/screenshots/login.PNG?raw=true "Login")
+
  ![Tasks Page](/Frontend/screenshots/tasks.JPG?raw=true "Tasks Page")
+
+ ![New Task](/Frontend/screenshots/newtask.PNG?raw=true "New Task")
 
  ![Add Tasks](/Frontend/screenshots/addtasks.JPG?raw=true "Add Tasks")

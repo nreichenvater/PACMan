@@ -3,11 +3,11 @@ package jku.win.se.assignmentManager.backend.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import jku.win.se.assignmentManager.backend.config.Constants;
 import jku.win.se.assignmentManager.backend.dao.TaskDao;
 import jku.win.se.assignmentManager.backend.dto.Task;
 import jku.win.se.assignmentManager.backend.response.ErrorResponse;
 import jku.win.se.assignmentManager.backend.response.TasksResponse;
-import jku.win.se.assignmentManager.backend.service.JupyterWriteService;
 import jku.win.se.assignmentManager.backend.util.StringUtils;
 import jku.win.se.assignmentManager.backend.util.WebtokenUtils;
 import spark.Request;
@@ -30,24 +30,15 @@ public class TasksController {
 	private Object filterTasks(Request request, Response response) {
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_SESSION_EXPIRED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_SESSION_EXPIRED);
 		}
-		
-		/*
-		 * 1 Fetch all tasks from DB
-		 * 2 check for query params (searchTerm and language)
-		 * 3 filter by searchTerm (title, taskId, combined metadata, combined cellsource)
-		 * 4 if language is set, filter by language
-		 * 5 if language is not set, add existing taskIds in other languages to result
-		 * 
-		 */
 		
 		List<Task> allTasks = taskDao.getAll();
 		List<Task> filteredTasks = new ArrayList<Task>();
@@ -57,7 +48,7 @@ public class TasksController {
 		
 		if(StringUtils.isEmptyOrNull(searchTerm) && StringUtils.isEmptyOrNull(language)) {
 			response.type("application/json");
-			response.status(ServerController.STATUS_CODE_OK);
+			response.status(Constants.STATUS_CODE_OK);
 			return new TasksResponse(allTasks);
 		}
 		
@@ -100,7 +91,7 @@ public class TasksController {
 		}
 		
 		response.type("application/json");
-		response.status(ServerController.STATUS_CODE_OK);
+		response.status(Constants.STATUS_CODE_OK);
 		return new TasksResponse(filteredTasks);
 	}
 }

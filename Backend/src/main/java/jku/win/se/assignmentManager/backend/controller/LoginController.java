@@ -1,5 +1,6 @@
 package jku.win.se.assignmentManager.backend.controller;
 
+import jku.win.se.assignmentManager.backend.config.Constants;
 import jku.win.se.assignmentManager.backend.dao.UserDao;
 import jku.win.se.assignmentManager.backend.dto.User;
 import jku.win.se.assignmentManager.backend.request.LoginRequest;
@@ -27,9 +28,9 @@ public class LoginController {
 		
 		String body = request.body();
 		if(body == null || body.length() <= 0) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		
 		LoginRequest loginRequest = null;
@@ -37,38 +38,38 @@ public class LoginController {
 			loginRequest = ServerController.GSON.fromJson(body, LoginRequest.class);
 		}
 		catch(Exception e) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		
 		String username = loginRequest.getUsername();
 		String password = loginRequest.getPassword();
 		User user = this.userDao.findByUsername(username);
 		if(user == null) {
-			response.status(ServerController.STATUS_CODE_NOT_FOUND);
+			response.status(Constants.STATUS_CODE_NOT_FOUND);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_UNKOWN_USER);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_UNKOWN_USER);
 		}
 		
 		String userPw = user.getPassword();
 		boolean pwValid = userPw.equals(password);
 		if(!pwValid) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		String token = WebtokenUtils.createWebtoken(username);
 		if(token == null) {
-			response.status(ServerController.STATUS_CODE_INTERNAL_SERVER_ERROR);
+			response.status(Constants.STATUS_CODE_INTERNAL_SERVER_ERROR);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_INTERNAL_SERVER_ERROR);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_INTERNAL_SERVER_ERROR);
 		}
 		
-		response.header("Access-Control-Expose-Headers", ServerController.HEADER_AUTHORIZATION);
-		response.header(ServerController.HEADER_AUTHORIZATION, token);
-		response.status(ServerController.STATUS_CODE_OK);
+		response.header("Access-Control-Expose-Headers", Constants.HEADER_AUTHORIZATION);
+		response.header(Constants.HEADER_AUTHORIZATION, token);
+		response.status(Constants.STATUS_CODE_OK);
 		response.type("application/json");
 		return new LoginResponse(username); 
 	}

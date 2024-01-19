@@ -1,7 +1,7 @@
 package jku.win.se.assignmentManager.backend.controller;
 
+import jku.win.se.assignmentManager.backend.config.Constants;
 import jku.win.se.assignmentManager.backend.dao.FileDao;
-import jku.win.se.assignmentManager.backend.dto.Task;
 import jku.win.se.assignmentManager.backend.dto.TaskFile;
 import jku.win.se.assignmentManager.backend.response.ErrorResponse;
 import jku.win.se.assignmentManager.backend.util.StringUtils;
@@ -28,19 +28,19 @@ public class FileController {
 		response.type("application/json");
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		TaskFile tf = fileDao.get(request.params(":id"));
 		if(tf == null) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			return new ErrorResponse("The requested file could not be found");
 		}
-		response.status(ServerController.STATUS_CODE_OK);
+		response.status(Constants.STATUS_CODE_OK);
 		return tf;
 	}
 	

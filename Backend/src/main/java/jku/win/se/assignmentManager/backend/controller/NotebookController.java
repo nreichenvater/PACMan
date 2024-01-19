@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.google.gson.JsonElement;
 
+import jku.win.se.assignmentManager.backend.config.Constants;
 import jku.win.se.assignmentManager.backend.dao.NotebookDao;
 import jku.win.se.assignmentManager.backend.dao.TagDao;
 import jku.win.se.assignmentManager.backend.dao.TaskDao;
@@ -51,14 +52,14 @@ public class NotebookController {
 	private Object saveNotebook(Request request, Response response) {
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		//check if body is valid and mandatory data is provided
@@ -70,13 +71,13 @@ public class NotebookController {
 			e.printStackTrace();
 		}
 		if(notebookRequest == null) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		String validationError = notebookRequest.validateBody();
 		if(!StringUtils.isEmptyOrNull(validationError)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
 			return new ErrorResponse(validationError);
 		}
@@ -91,7 +92,7 @@ public class NotebookController {
 		
 		notebookDao.save(notebook);
 		
-		response.status(ServerController.STATUS_CODE_OK);
+		response.status(Constants.STATUS_CODE_OK);
 		return new NotebookResponse(notebook.getMetadata().get("assignment_id"), json);
 	}
 	
@@ -99,23 +100,23 @@ public class NotebookController {
 		response.type("application/json");
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		String id = request.queryParams("id");
 		if(!StringUtils.isEmptyOrNull(id)) {
 			Notebook nb = notebookDao.get(id);
 			if(nb != null) {
-				response.status(ServerController.STATUS_CODE_OK);
+				response.status(Constants.STATUS_CODE_OK);
 				return new NotebookResponse(nb.getMetadata().get("assignment_id"), nb.getJson());
 			}
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		
 		List<Notebook> allNotebooks = notebookDao.getAll();
@@ -130,11 +131,11 @@ public class NotebookController {
 					filteredNotebooks.add(nb);
 				}
 			}
-			response.status(ServerController.STATUS_CODE_OK);
+			response.status(Constants.STATUS_CODE_OK);
 			return new NotebooksResponse(filteredNotebooks);
 		}
 		
-		response.status(ServerController.STATUS_CODE_OK);
+		response.status(Constants.STATUS_CODE_OK);
 		return new NotebooksResponse(allNotebooks);
 	}
 
@@ -142,37 +143,37 @@ public class NotebookController {
 		//check if user is logged in with valid token
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		Notebook nb = notebookDao.get(request.params(":id"));
 		if(nb != null) {
 			notebookDao.delete(nb);
-			response.status(ServerController.STATUS_CODE_OK);
+			response.status(Constants.STATUS_CODE_OK);
 			return new SuccessResponse("The notebook was deleted successfully");
 		}
-		response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+		response.status(Constants.STATUS_CODE_BAD_REQUEST);
 		return new ErrorResponse("The notebook could not be found");
 	}
 	
 	private Object saveUploadNotebook(Request request, Response response) {
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		
 		String body = request.body();
@@ -191,9 +192,9 @@ public class NotebookController {
 				e.printStackTrace();
 			}
 			if(tjr == null) {
-				response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+				response.status(Constants.STATUS_CODE_BAD_REQUEST);
 				response.type("application/json");
-				return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+				return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 			}
 			Task t = JupyterReadService.readTask(tjr, tagDao);
 			taskDao.upsert(t);
@@ -210,14 +211,14 @@ public class NotebookController {
 	private Object getNotebookPreview(Request request, Response response) {
 		String authorization = request.headers("Authorization");
 		if(StringUtils.isEmptyOrNull(authorization)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		if(!WebtokenUtils.isTokenValid(authorization)) {
-			response.status(ServerController.STATUS_CODE_UNAUTHORIZED);
+			response.status(Constants.STATUS_CODE_UNAUTHORIZED);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_CREDENTIALS);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_CREDENTIALS);
 		}
 		//check if body is valid and mandatory data is provided
 		String body = request.body();
@@ -228,19 +229,19 @@ public class NotebookController {
 			e.printStackTrace();
 		}
 		if(notebookRequest == null) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
-			return new ErrorResponse(ServerController.ERROR_MESSAGE_WRONG_REQUEST);
+			return new ErrorResponse(Constants.ERROR_MESSAGE_WRONG_REQUEST);
 		}
 		String validationError = notebookRequest.validateBody();
 		if(!StringUtils.isEmptyOrNull(validationError)) {
-			response.status(ServerController.STATUS_CODE_BAD_REQUEST);
+			response.status(Constants.STATUS_CODE_BAD_REQUEST);
 			response.type("application/json");
 			return new ErrorResponse(validationError);
 		}
 		
 		String json = JupyterWriteService.generateNotebookJson(notebookRequest.getTasks(), notebookRequest.getTitle(), notebookRequest.getMetadata().get("tutor"), notebookRequest.getInfo(), notebookRequest.getMetadata(), notebookRequest.isIncludeGradingTable());
-		response.status(ServerController.STATUS_CODE_OK);
+		response.status(Constants.STATUS_CODE_OK);
 		response.type("application/json");
 		return new PreviewResponse(json);
 	}
