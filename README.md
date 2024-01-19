@@ -9,3 +9,5 @@
  - Database: MongoDB
 
  ![Tasks Page](/Frontend/screenshots/tasks.JPG?raw=true "Tasks Page")
+
+ ![Add Tasks](/Frontend/screenshots/addtasks.JPG?raw=true "Add Tasks")

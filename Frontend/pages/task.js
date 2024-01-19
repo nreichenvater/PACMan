@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react'
 import Layout from '@/components/layouts'
 import { TagPicker } from 'rsuite'
 import mongodb from '@/utils/mongodb'
-import arrayUtils from '@/utils/arrayUtils'
 import API from 'api'
 import Notification from '@/service/notification'
 import router from 'next/router'
@@ -176,7 +175,7 @@ const task = (ctx) => {
   }
 
   const checkTaskExists = async () => {
-    const err = validateTaskInput()
+    const err = taskService.validateTaskInput(task)
     if(err){
       Notification.error(err)
       return
@@ -217,7 +216,7 @@ const task = (ctx) => {
       file : {
         fileType: fileType,
         fileName: chosenFileName,
-        stringContent: toBase64(fileContent)
+        stringContent: fileUtils.toBase64(fileContent)
       }
     }
     try {
@@ -229,28 +228,6 @@ const task = (ctx) => {
     } catch (e) {
       setLoading(false)
       Notification.error(e)
-    }
-  }
-
-  const toBase64 = (arrayBuffer) => {
-    return btoa(
-      new Uint8Array(arrayBuffer)
-        .reduce((data, byte) => data + String.fromCharCode(byte), '')
-    )
-  }
-
-  const validateTaskInput = () => {
-    if(!task.title){
-      return "Please enter a title for the task"
-    }
-    if(!task.cells.length){
-      return "Please add cells to the tasks"
-    }
-    if(!task.taskId){
-      return "Please enter a (per language) unique task_id"
-    }
-    if(!task.maxPoints || isNaN(task.maxPoints)){
-      return "Please enter a valid number of default max points"
     }
   }
 
@@ -269,17 +246,6 @@ const task = (ctx) => {
     } else {
       Notification.error("Please enter a valid key-value-pair")
     }
-  }
-
-  const moveElem = (elem, mode) => {
-    const index = task.cells.indexOf(elem)
-    const cells = task.cells
-    if(mode === 1){
-      arrayUtils.swap(cells,index,index-1)
-    } else if(mode === 2){
-      arrayUtils.swap(cells,index,index+1)
-    }
-    setTask({...task,cells})
   }
 
   const preparePreviewTask = () => {
@@ -487,8 +453,8 @@ const task = (ctx) => {
                 task.cells.map(c => (
                   <div className="taskcellwrapper">
                     <div className="cellbuttonpanel">
-                      {task.cells.indexOf(c) > 0 ? <div className="cellbutton" onClick={() => moveElem(c,1)}>▲</div> : <></>}
-                      {task.cells.indexOf(c) < task.cells.length-1 ? <div className="cellbutton"onClick={() => moveElem(c,2)}>▼</div> : <></>}
+                      {task.cells.indexOf(c) > 0 ? <div className="cellbutton" onClick={() => setTask(taskService.moveElem(c,1))}>▲</div> : <></>}
+                      {task.cells.indexOf(c) < task.cells.length-1 ? <div className="cellbutton"onClick={() =>  setTask(taskService.moveElem(c,2))}>▼</div> : <></>}
                       <img src="images/bleistift.png" className="editbutton"
                         onClick={() => {
                           setCellIndexToEdit(task.cells.indexOf(c))

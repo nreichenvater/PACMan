@@ -18,5 +18,11 @@ export default {
     } catch(e) {
       //
     }
+  },
+  toBase64: (arrayBuffer) => {
+      return btoa(
+        new Uint8Array(arrayBuffer)
+          .reduce((data, byte) => data + String.fromCharCode(byte), '')
+      )
   }
 }
